@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.XpringClient;
 import io.xpring.xrpl.XpringKitException;
 import tech.xtack.api.Database;
 import tech.xtack.api.WalletCache;
@@ -27,9 +28,11 @@ import java.util.Optional;
 public class CreateQuestionResource {
 
     private Database database;
+    private XpringClient client;
 
-    public CreateQuestionResource(Database database) {
+    public CreateQuestionResource(Database database, XpringClient client) {
         this.database = database;
+        this.client = client;
     }
 
     @POST
@@ -46,10 +49,9 @@ public class CreateQuestionResource {
             BigInteger bounty = bountyParam.get();
             Account account = accOpt.get();
             Wallet wallet = WalletCache.getOrGenerate(account.getWalletMnemonic());
-            XrpClient client = new XrpClient(wallet);
             BigInteger balance = BigInteger.ZERO;
             try {
-                balance = client.getBalance();
+                balance = client.getBalance(wallet.getAddress());
             }
             catch (StatusRuntimeException e) {
                 if (!e.getMessage().equals("NOT_FOUND: account not found")) {
@@ -61,7 +63,7 @@ public class CreateQuestionResource {
             if (balance.compareTo(bountyDrops) > 0) {
                 throw new WebApplicationException("Your balance does not have enough XRP to cover this bounty.", 400);
             }
-            client.send(bountyDrops, WalletCache.MASTER_WALLET.getAddress());
+            client.send(bountyDrops, WalletCache.MASTER_WALLET.getAddress(), wallet);
             String uuid = database.createQuestion(title, body, bounty, account.getUuid());
             return new Question(uuid, title, account.getUuid(), bounty, bounty, body, 0, new ArrayList<>(),
                     0, Timestamp.from(Instant.now()), null);

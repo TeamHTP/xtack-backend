@@ -6,6 +6,7 @@ import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.xpring.xrpl.XpringClient;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import tech.xtack.api.auth.XtackAuthenticator;
@@ -38,6 +39,7 @@ public class XtackApplication extends Application<XtackConfiguration> {
 
     public void run(XtackConfiguration xtackConfiguration, Environment environment) throws URISyntaxException, SQLException {
         Database database = new Database();
+        XpringClient client = new XpringClient(true);
 
         // CORS
         final FilterRegistration.Dynamic cors =
@@ -70,15 +72,15 @@ public class XtackApplication extends Application<XtackConfiguration> {
         environment.jersey().register(questionResource);
         final AuthResource authResource = new AuthResource(database);
         environment.jersey().register(authResource);
-        final WalletResource walletResource = new WalletResource();
+        final WalletResource walletResource = new WalletResource(client);
         environment.jersey().register(walletResource);
         final AnswerResource answerResource = new AnswerResource(database);
         environment.jersey().register(answerResource);
         final CreateAnswerResource createAnswerResource = new CreateAnswerResource(database);
         environment.jersey().register(createAnswerResource);
-        final CreateQuestionResource createQuestionResource = new CreateQuestionResource(database);
+        final CreateQuestionResource createQuestionResource = new CreateQuestionResource(database, client);
         environment.jersey().register(createQuestionResource);
-        final AcceptAnswerResource acceptAnswerResource = new AcceptAnswerResource(database);
+        final AcceptAnswerResource acceptAnswerResource = new AcceptAnswerResource(database, client);
         environment.jersey().register(acceptAnswerResource);
         final MyAccountResource myAccountResource = new MyAccountResource();
         environment.jersey().register(myAccountResource);

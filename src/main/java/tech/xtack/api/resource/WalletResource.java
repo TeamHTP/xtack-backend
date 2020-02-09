@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.XpringClient;
 import io.xpring.xrpl.XpringKitException;
 import tech.xtack.api.WalletCache;
 import tech.xtack.api.model.Account;
@@ -23,6 +24,12 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class WalletResource {
 
+    private XpringClient client;
+
+    public WalletResource(XpringClient client) {
+        this.client = client;
+    }
+
     @GET
     @Timed
     @RolesAllowed("USER")
@@ -34,10 +41,9 @@ public class WalletResource {
             Account account = accOpt.get();
             if (account != null) {
                 Wallet wallet = WalletCache.getOrGenerate(account.getWalletMnemonic());
-                XrpClient client = new XrpClient(wallet);
                 XtackWallet xtackWallet = new XtackWallet();
                 try {
-                    xtackWallet.setBalance(client.getBalance());
+                    xtackWallet.setBalance(client.getBalance(wallet.getAddress()));
                 }
                 catch (StatusRuntimeException e) {
                     System.out.println(e.getMessage());

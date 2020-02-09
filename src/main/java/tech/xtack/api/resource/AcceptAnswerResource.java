@@ -2,6 +2,7 @@ package tech.xtack.api.resource;
 
 import io.dropwizard.auth.Auth;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.XpringClient;
 import io.xpring.xrpl.XpringKitException;
 import org.checkerframework.checker.units.qual.Time;
 import tech.xtack.api.Database;
@@ -25,9 +26,11 @@ import java.util.Optional;
 public class AcceptAnswerResource {
 
     private Database database;
+    private XpringClient client;
 
-    public AcceptAnswerResource(Database database) {
+    public AcceptAnswerResource(Database database, XpringClient client) {
         this.database = database;
+        this.client = client;
     }
 
     @GET
@@ -46,10 +49,10 @@ public class AcceptAnswerResource {
                 Answer answer = database.getAnswer(answerUuid);
                 Account answerAuthor = database.getAccount(database.getAnswer(answerUuid).getAuthorUuid());
                 Wallet wallet = WalletCache.getOrGenerate(answerAuthor.getWalletMnemonic());
-                XrpClient client = new XrpClient(WalletCache.MASTER_WALLET);
                 client.send(question.getBountyMin()
                         .multiply(BigInteger.valueOf(1000000))
-                        .subtract(question.getBountyMin().multiply(BigInteger.valueOf(5000))), wallet.getAddress());
+                        .subtract(question.getBountyMin().multiply(BigInteger.valueOf(5000))), wallet.getAddress(),
+                        WalletCache.MASTER_WALLET);
                 return answer;
             }
             else {
