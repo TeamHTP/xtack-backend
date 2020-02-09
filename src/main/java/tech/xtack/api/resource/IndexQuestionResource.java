@@ -4,16 +4,15 @@ import com.codahale.metrics.annotation.Timed;
 import tech.xtack.api.Database;
 import tech.xtack.api.model.Question;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Path("/question")
+@Path("/question/list")
+@Produces(MediaType.APPLICATION_JSON)
 public class IndexQuestionResource {
 
     private Database database;
