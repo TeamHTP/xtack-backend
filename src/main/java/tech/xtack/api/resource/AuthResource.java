@@ -26,7 +26,7 @@ public class AuthResource {
 
     @GET
     @Timed
-    public Account get(@QueryParam("email") Optional<String> emailParam, @QueryParam("password") Optional<String> passwordParam, @Context HttpServletResponse response) {
+    public String get(@QueryParam("email") Optional<String> emailParam, @QueryParam("password") Optional<String> passwordParam, @Context HttpServletResponse response) {
         if (!emailParam.isPresent() || !passwordParam.isPresent()) {
             throw new WebApplicationException("Missing email or password.", 400);
         }
@@ -37,7 +37,7 @@ public class AuthResource {
                 database.createAuthToken(account.getUuid(), authToken);
                 account.setSessionToken(authToken);
                 response.addHeader("Set-Cookie", "session_token=" + authToken + "; HttpOnly; Max-Age=" + (7 * 24 * 60 * 60));
-                return account;
+                return authToken;
             }
             else {
                 throw new WebApplicationException(404);
