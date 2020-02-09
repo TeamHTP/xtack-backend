@@ -2,9 +2,13 @@ package tech.xtack.api.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
+import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.XpringKitException;
 import tech.xtack.api.Database;
+import tech.xtack.api.WalletCache;
 import tech.xtack.api.model.Account;
 import tech.xtack.api.model.Question;
+import tech.xtack.api.xpring.XrpClient;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -40,10 +44,19 @@ public class CreateQuestionResource {
             String body = bodyParam.get();
             BigInteger bounty = bountyParam.get();
             Account account = accOpt.get();
+            Wallet wallet = WalletCache.getOrGenerate(account.getWalletMnemonic());
+            XrpClient client = new XrpClient(wallet);
+            BigInteger balance = client.getBalance();
+
+            BigInteger bountyDrops = bounty.multiply(BigInteger.valueOf(1000000));
+            if (balance.compareTo(bountyDrops) < 0) {
+                throw new WebApplicationException("Your balance does not have enough XRP to cover this bounty.", 400);
+            }
+            client.send(bountyDrops, WalletCache.MASTER_WALLET.getAddress());
             String uuid = database.createQuestion(title, body, bounty, account.getUuid());
             return new Question(uuid, title, account.getUuid(), bounty, bounty, body, 0, new ArrayList<>(),
                     0, Timestamp.from(Instant.now()), null);
-        } catch (SQLException | URISyntaxException e) {
+        } catch (SQLException | URISyntaxException | XpringKitException e) {
             e.printStackTrace();
             throw new WebApplicationException(500);
         }

@@ -1,17 +1,22 @@
 package tech.xtack.api.resource;
 
 import io.dropwizard.auth.Auth;
+import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.XpringKitException;
 import org.checkerframework.checker.units.qual.Time;
 import tech.xtack.api.Database;
+import tech.xtack.api.WalletCache;
 import tech.xtack.api.model.Account;
 import tech.xtack.api.model.Answer;
 import tech.xtack.api.model.Question;
+import tech.xtack.api.xpring.XrpClient;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -38,12 +43,19 @@ public class AcceptAnswerResource {
             Question question = database.getQuestion(questionUuid);
             if (question.getAuthorUuid().equals(account.getUuid())) {
                 database.acceptAnswer(questionUuid, answerUuid);
-                return database.getAnswer(answerUuid);
+                Answer answer = database.getAnswer(answerUuid);
+                Account answerAuthor = database.getAccount(database.getAnswer(answerUuid).getAuthorUuid());
+                Wallet wallet = WalletCache.getOrGenerate(answerAuthor.getWalletMnemonic());
+                XrpClient client = new XrpClient(WalletCache.MASTER_WALLET);
+                client.send(question.getBountyMin()
+                        .multiply(BigInteger.valueOf(1000000))
+                        .subtract(question.getBountyMin().multiply(BigInteger.valueOf(5000))), wallet.getAddress());
+                return answer;
             }
             else {
                 throw new WebApplicationException(403);
             }
-        } catch (SQLException | URISyntaxException e) {
+        } catch (SQLException | URISyntaxException | XpringKitException e) {
             e.printStackTrace();
             throw new WebApplicationException(500);
         }

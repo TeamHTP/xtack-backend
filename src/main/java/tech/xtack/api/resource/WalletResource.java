@@ -5,6 +5,7 @@ import io.dropwizard.auth.Auth;
 import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XpringKitException;
+import tech.xtack.api.WalletCache;
 import tech.xtack.api.model.Account;
 import tech.xtack.api.model.XtackWallet;
 import tech.xtack.api.xpring.XrpClient;
@@ -32,7 +33,7 @@ public class WalletResource {
             }
             Account account = accOpt.get();
             if (account != null) {
-                Wallet wallet = new Wallet(account.getWalletMnemonic(), null);
+                Wallet wallet = WalletCache.getOrGenerate(account.getWalletMnemonic());
                 XrpClient client = new XrpClient(wallet);
                 XtackWallet xtackWallet = new XtackWallet();
                 try {
