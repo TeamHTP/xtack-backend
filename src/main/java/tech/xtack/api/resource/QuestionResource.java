@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 
-@Path("/question/{uuid}/{human_title}")
+@Path("/question/{uuid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class QuestionResource {
 
