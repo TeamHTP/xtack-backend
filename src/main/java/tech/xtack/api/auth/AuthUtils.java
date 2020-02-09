@@ -3,6 +3,7 @@ package tech.xtack.api.auth;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 public class AuthUtils {
 
@@ -10,6 +11,15 @@ public class AuthUtils {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedhash = digest.digest((System.getenv("SALT") + password)
                 .getBytes(StandardCharsets.UTF_8));
+        return bytesToHex(encodedhash);
+    }
+
+    public static String generateAuthToken() throws NoSuchAlgorithmException {
+        Random random = new Random(System.currentTimeMillis() - Long.parseLong(System.getenv("SEED_OFFSET")));
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] encodedhash = digest.digest(bytes);
         return bytesToHex(encodedhash);
     }
 

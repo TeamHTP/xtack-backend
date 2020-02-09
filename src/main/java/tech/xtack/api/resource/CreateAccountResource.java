@@ -46,7 +46,7 @@ public class CreateAccountResource {
         try {
             String mnemonic = wgr.getMnemonic();
             String uuid = database.createAccount(username, AuthUtils.hashPassword(password), email, mnemonic);
-            return new Account(uuid, username, AuthUtils.hashPassword(password), email, mnemonic);
+            return new Account(uuid, username, AuthUtils.hashPassword(password), email, mnemonic, null);
         } catch (URISyntaxException | SQLException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new WebApplicationException(503);

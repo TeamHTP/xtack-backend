@@ -12,15 +12,17 @@ public class Account implements Principal {
     private String email;
     private String password;
     private String walletMnemonic;
+    private String sessionToken;
 
     public Account() {}
 
-    public Account(String uuid, String username, String email, String password, String walletMnemonic) {
+    public Account(String uuid, String username, String email, String password, String walletMnemonic, String sessionToken) {
         this.uuid = uuid;
         this.username = username;
         this.email = email;
         this.password = password;
         this.walletMnemonic = walletMnemonic;
+        this.sessionToken = sessionToken;
     }
 
     @JsonProperty
@@ -46,6 +48,15 @@ public class Account implements Principal {
     @JsonIgnore
     public String getWalletMnemonic() {
         return walletMnemonic;
+    }
+
+    @JsonProperty
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
     }
 
     @Override

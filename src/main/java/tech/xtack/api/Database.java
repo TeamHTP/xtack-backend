@@ -1,5 +1,6 @@
 package tech.xtack.api;
 
+import tech.xtack.api.auth.AuthUtils;
 import tech.xtack.api.model.Account;
 import tech.xtack.api.model.Question;
 import tech.xtack.api.model.Tag;
@@ -29,8 +30,18 @@ public class Database {
 
     public Account getAccount(String uuid) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE id == ?::uuid");
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE uuid = ?::uuid;");
         ps.setString(1, uuid);
+        ResultSet rs = ps.executeQuery();
+        connection.close();
+        return getAccountFromResultSet(rs);
+    }
+
+    public Account getAccountFromEmailAndPassword(String email, String password) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE email = ? AND password = ?;");
+        ps.setString(1, email);
+        ps.setString(2, password);
         ResultSet rs = ps.executeQuery();
         connection.close();
         return getAccountFromResultSet(rs);
@@ -38,7 +49,7 @@ public class Database {
 
     public Account getAccountFromSessionToken(String sessionToken) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE session_token == ?");
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE session_token = ?;");
         ps.setString(1, sessionToken);
         ResultSet rs = ps.executeQuery();
         connection.close();
@@ -47,7 +58,7 @@ public class Database {
 
     public Question getQuestion(String uuid) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement("SELECT * FROM questions WHERE uuid == ?::uuid");
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM questions WHERE uuid = ?::uuid;");
         ps.setString(1, uuid);
         ResultSet rs = ps.executeQuery();
         connection.close();
@@ -55,7 +66,7 @@ public class Database {
     }
 
     public Question getQuestionFromResultSet(ResultSet rs) throws SQLException {
-        if (rs.first()) {
+        if (rs.next()) {
             String uuid = rs.getString("uuid");
             String title = rs.getString("title");
             String authorUuid = rs.getString("author_uuid");
@@ -75,20 +86,21 @@ public class Database {
     }
 
     public Account getAccountFromResultSet(ResultSet rs) throws SQLException {
-        if (rs.first()) {
+        if (rs.next()) {
             String uuid = rs.getString("uuid");
             String username = rs.getString("username");
-            String password = rs.getString("password");
             String email = rs.getString("email");
+            String password = rs.getString("password");
             String walletMnemonic = rs.getString("wallet_mnemonic");
-            return new Account(uuid, username, password, email, walletMnemonic);
+            String sessionToken = rs.getString("session_token");
+            return new Account(uuid, username, email, password, walletMnemonic, sessionToken);
         }
         return null;
     }
 
     public String createAccount(String username, String password, String email, String walletMnemonic) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO accounts (uuid, username, password, email, wallet_mnemonic) VALUES (?::uuid, ?, ?, ?, ?)");
+        PreparedStatement ps = connection.prepareStatement("INSERT INTO accounts (uuid, username, password, email, wallet_mnemonic) VALUES (?::uuid, ?, ?, ?, ?);");
         String uuid = UUID.randomUUID().toString();
         ps.setString(1, uuid);
         ps.setString(2, username);
@@ -98,6 +110,15 @@ public class Database {
         ps.execute();
         connection.close();
         return uuid;
+    }
+
+    public void createAuthToken(String accountUuid, String token) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET session_token = ? WHERE uuid = ?::uuid;");
+        ps.setString(1, token);
+        ps.setString(2, accountUuid);
+        ps.execute();
+        connection.close();
     }
 
 }
