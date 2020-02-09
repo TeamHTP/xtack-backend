@@ -97,6 +97,28 @@ public class Database {
         return null;
     }
 
+    public ArrayList<Question> getQuestionsList(String sortMethod, int page) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps;
+        if (sortMethod.equals("score")) {
+            ps = connection.prepareStatement("SELECT * FROM questions ORDER BY score DESC LIMIT 25 OFFSET ?");
+            ps.setInt(1, page * 25);
+        }
+        else {
+            ps = connection.prepareStatement("SELECT * FROM questions ORDER BY timestamp DESC LIMIT 25 OFFSET ?");
+            ps.setInt(1, page * 25);
+        }
+        ResultSet rs = ps.executeQuery();
+        connection.close();
+        ArrayList<Question> questions = new ArrayList<>();
+        do {
+            questions.add(getQuestionFromResultSet(rs));
+        }
+        while (questions.get(questions.size() - 1) != null);
+        questions.remove(questions.size() - 1);
+        return questions;
+    }
+
     public Answer getAnswerFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             String uuid = rs.getString("uuid");
@@ -161,6 +183,8 @@ public class Database {
         ps.setString(3, body);
         ps.setBigDecimal(4, new BigDecimal(bounty));
         ps.setString(5, uuid);
+        ps.execute();
+        connection.close();
         return uuid;
     }
 
@@ -173,6 +197,8 @@ public class Database {
         ps.setString(2, questionUuid);
         ps.setString(3, authorUuid);
         ps.setString(4, body);
+        ps.execute();
+        connection.close();
         return uuid;
     }
 
