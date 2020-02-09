@@ -133,6 +133,7 @@ public class Database {
         ps.setString(2, username);
         ps.setString(3, password);
         ps.setString(4, email);
+        // TODO: encrypt mnemonic
         ps.setString(5, walletMnemonic);
         ps.execute();
         connection.close();
