@@ -39,7 +39,7 @@ public class WalletResource {
                 }
                 catch (StatusRuntimeException e) {
                     System.out.println(e.getMessage());
-                    if (e.getMessage().equals("UNKNOWN: Account not found.")) {
+                    if (e.getMessage().equals("NOT_FOUND: account not found")) {
                         xtackWallet.setBalance(BigInteger.ZERO);
                     }
                     else if (!e.getMessage().equals("ManagedChannel allocation site")) {

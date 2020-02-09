@@ -13,7 +13,7 @@ public class XrpClient {
     private Wallet wallet;
 
     public XrpClient(Wallet wallet) {
-        this.client = new XpringClient();
+        this.client = new XpringClient(true);
         this.wallet = wallet;
     }
 
@@ -25,7 +25,7 @@ public class XrpClient {
         return wallet;
     }
 
-    public TransactionStatus getTransactionStatus(String txHash) {
+    public TransactionStatus getTransactionStatus(String txHash) throws XpringKitException {
         return client.getTransactionStatus(txHash);
     }
 
