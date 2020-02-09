@@ -119,6 +119,22 @@ public class Database {
         return questions;
     }
 
+    public ArrayList<Answer> getAnswersList(String questionUuid) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps;
+        ps = connection.prepareStatement("SELECT * FROM answers WHERE question_uuid = ?::uuid;");
+        ps.setString(1, questionUuid);
+        ResultSet rs = ps.executeQuery();
+        connection.close();
+        ArrayList<Answer> answers = new ArrayList<>();
+        do {
+            answers.add(getAnswerFromResultSet(rs));
+        }
+        while (answers.get(answers.size() - 1) != null);
+        answers.remove(answers.size() - 1);
+        return answers;
+    }
+
     public Answer getAnswerFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             String uuid = rs.getString("uuid");

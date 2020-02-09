@@ -86,5 +86,7 @@ public class XtackApplication extends Application<XtackConfiguration> {
         environment.jersey().register(myAccountResource);
         final IndexQuestionResource indexQuestionResource = new IndexQuestionResource(database);
         environment.jersey().register(indexQuestionResource);
+        final IndexAnswersResource indexAnswersResource = new IndexAnswersResource(database);
+        environment.jersey().register(indexAnswersResource);
     }
 }
