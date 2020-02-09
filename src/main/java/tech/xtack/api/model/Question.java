@@ -2,6 +2,7 @@ package tech.xtack.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -10,8 +11,8 @@ public class Question {
     private String uuid;
     private String title;
     private String authorUuid;
-    private long bountyMin;
-    private long bountyMax;
+    private BigInteger bountyMin;
+    private BigInteger bountyMax;
     private String body;
     private int status;
     private ArrayList<Tag> tags;
@@ -21,7 +22,7 @@ public class Question {
 
     public Question() {}
 
-    public Question(String uuid, String title, String authorUuid, long bountyMin, long bountyMax, String body,
+    public Question(String uuid, String title, String authorUuid, BigInteger bountyMin, BigInteger bountyMax, String body,
                     int status, ArrayList<Tag> tags, long score, Timestamp timestamp, String acceptedAnswerUuid) {
         this.uuid = uuid;
         this.title = title;
@@ -50,12 +51,12 @@ public class Question {
     }
 
     @JsonProperty("bounty_min")
-    public long getBountyMin() {
+    public BigInteger getBountyMin() {
         return bountyMin;
     }
 
     @JsonProperty("bounty_max")
-    public long getBountyMax() {
+    public BigInteger getBountyMax() {
         return bountyMax;
     }
 

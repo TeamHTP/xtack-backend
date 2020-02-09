@@ -10,6 +10,7 @@ import tech.xtack.api.model.Account;
 import tech.xtack.api.model.XtackWallet;
 import tech.xtack.api.xpring.XrpClient;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,6 +25,7 @@ public class WalletResource {
 
     @GET
     @Timed
+    @RolesAllowed("USER")
     public XtackWallet get(@Auth Optional<Account> accOpt) {
         try {
             if (!accOpt.isPresent()) {

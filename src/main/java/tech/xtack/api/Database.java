@@ -1,10 +1,12 @@
 package tech.xtack.api;
 
-import tech.xtack.api.auth.AuthUtils;
 import tech.xtack.api.model.Account;
+import tech.xtack.api.model.Answer;
 import tech.xtack.api.model.Question;
 import tech.xtack.api.model.Tag;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
@@ -65,6 +67,15 @@ public class Database {
         return getQuestionFromResultSet(rs);
     }
 
+    public Answer getAnswer(String uuid) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM answers WHERE uuid = ?::uuid;");
+        ps.setString(1, uuid);
+        ResultSet rs = ps.executeQuery();
+        connection.close();
+        return getAnswerFromResultSet(rs);
+    }
+
     public Question getQuestionFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             String uuid = rs.getString("uuid");
@@ -79,8 +90,23 @@ public class Database {
             long score = rs.getLong("score");
             Timestamp timestamp = rs.getTimestamp("timestamp");
             String acceptedAnswerUuid = rs.getString("accepted_answer_uuid");
-            return new Question(uuid, title, authorUuid, bountyMin, bountyMax, body, status, tags, score, timestamp,
+            return new Question(uuid, title, authorUuid, BigInteger.valueOf(bountyMin), BigInteger.valueOf(bountyMax),
+                    body, status, tags, score, timestamp,
                     acceptedAnswerUuid);
+        }
+        return null;
+    }
+
+    public Answer getAnswerFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            String uuid = rs.getString("uuid");
+            String questionUuid = rs.getString("question_uuid");
+            String authorUuid = rs.getString("author_uuid");
+            Timestamp timestamp = rs.getTimestamp("timestamp");
+            long score = rs.getLong("score");
+            boolean isAccepted = rs.getBoolean("is_accepted");
+            String body = rs.getString("body");
+            return new Answer(uuid, questionUuid, authorUuid, timestamp, score, isAccepted, body);
         }
         return null;
     }
@@ -100,7 +126,8 @@ public class Database {
 
     public String createAccount(String username, String password, String email, String walletMnemonic) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO accounts (uuid, username, password, email, wallet_mnemonic) VALUES (?::uuid, ?, ?, ?, ?);");
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO accounts (uuid, username, password, email, wallet_mnemonic) VALUES (?::uuid, ?, ?, ?, ?);");
         String uuid = UUID.randomUUID().toString();
         ps.setString(1, uuid);
         ps.setString(2, username);
@@ -114,11 +141,37 @@ public class Database {
 
     public void createAuthToken(String accountUuid, String token) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET session_token = ? WHERE uuid = ?::uuid;");
+        PreparedStatement ps = connection.prepareStatement(
+                "UPDATE accounts SET session_token = ? WHERE uuid = ?::uuid;");
         ps.setString(1, token);
         ps.setString(2, accountUuid);
         ps.execute();
         connection.close();
     }
 
+    public String createQuestion(String title, String body, BigInteger bounty, String authorUuid)
+            throws SQLException, URISyntaxException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO questions (title, author_uuid, body, bounty_min, uuid) VALUES (?, ?::uuid, ?, ?, ?::uuid);");
+        String uuid = UUID.randomUUID().toString();
+        ps.setString(1, title);
+        ps.setString(2, authorUuid);
+        ps.setString(3, body);
+        ps.setBigDecimal(4, new BigDecimal(bounty));
+        ps.setString(5, uuid);
+        return uuid;
+    }
+
+    public String createAnswer(String questionUuid, String authorUuid, String body) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO answers (uuid, question_uuid, author_uuid, body) VALUES (?::uuid, ?::uuid, ?::uuid, ?);");
+        String uuid = UUID.randomUUID().toString();
+        ps.setString(1, uuid);
+        ps.setString(2, questionUuid);
+        ps.setString(3, authorUuid);
+        ps.setString(4, body);
+        return uuid;
+    }
 }
