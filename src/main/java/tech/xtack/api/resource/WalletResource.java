@@ -5,7 +5,6 @@ import io.dropwizard.auth.Auth;
 import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XpringKitException;
-import tech.xtack.api.Database;
 import tech.xtack.api.model.Account;
 import tech.xtack.api.model.XtackWallet;
 import tech.xtack.api.xpring.XrpClient;

@@ -17,7 +17,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Path("/question/{uuid}/{human_title}")
+@Path("/question")
 @Produces(MediaType.APPLICATION_JSON)
 public class CreateQuestionResource {
 
