@@ -6,14 +6,18 @@ import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import tech.xtack.api.auth.XtackAuthenticator;
 import tech.xtack.api.auth.XtackAuthorizer;
 import tech.xtack.api.model.Account;
 import tech.xtack.api.resource.*;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.EnumSet;
 
 public class XtackApplication extends Application<XtackConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -55,5 +59,15 @@ public class XtackApplication extends Application<XtackConfiguration> {
         environment.jersey().register(authResource);
         final WalletResource walletResource = new WalletResource();
         environment.jersey().register(walletResource);
+
+        // CORS
+        final FilterRegistration.Dynamic cors =
+                environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+
+        cors.setInitParameter("allowedOrigins", "*");
+        cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+        cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
     }
 }
