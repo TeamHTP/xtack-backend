@@ -25,11 +25,11 @@ public class CreateAccountResource {
         this.database = database;
     }
 
-    @PUT
+    @POST
     @Timed
-    public Account put(@QueryParam("username") Optional<String> usernameParam,
-                       @QueryParam("password") Optional<String> passwordParam,
-                       @QueryParam("email") Optional<String> emailParam) {
+    public Account post(@FormParam("username") Optional<String> usernameParam,
+                       @FormParam("password") Optional<String> passwordParam,
+                       @FormParam("email") Optional<String> emailParam) {
         if (!usernameParam.isPresent() || !passwordParam.isPresent() || !emailParam.isPresent()) {
             throw new WebApplicationException("Missing registration params", 400);
         }
