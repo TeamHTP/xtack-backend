@@ -65,6 +65,8 @@ public class XtackApplication extends Application<XtackConfiguration> {
         environment.jersey().register(createAnswerResource);
         final CreateQuestionResource createQuestionResource = new CreateQuestionResource(database);
         environment.jersey().register(createQuestionResource);
+        final AcceptAnswerResource acceptAnswerResource = new AcceptAnswerResource(database);
+        environment.jersey().register(acceptAnswerResource);
 
         // CORS
         final FilterRegistration.Dynamic cors =

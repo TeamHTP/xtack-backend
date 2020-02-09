@@ -174,4 +174,19 @@ public class Database {
         ps.setString(4, body);
         return uuid;
     }
+
+    public boolean acceptAnswer(String questionUuid, String answerUuid) throws SQLException, URISyntaxException {
+        Connection connection = getConnection();
+        PreparedStatement queryPs = connection.prepareStatement("SELECT * FROM questions WHERE accepted_answer_uuid = NULL AND uuid = ?::uuid;");
+        queryPs.setString(1, questionUuid);
+        ResultSet rs = queryPs.executeQuery();
+        if (rs.next()) {
+            return false;
+        }
+        PreparedStatement questionsPs = connection.prepareStatement("UPDATE questions SET accepted_answer_uuid = ?::uuid WHERE uuid = ?::uuid;");
+        questionsPs.setString(1, answerUuid);
+        questionsPs.setString(2, questionUuid);
+        questionsPs.execute();
+        return true;
+    }
 }
