@@ -49,6 +49,9 @@
                         <goals><goal>copy-dependencies</goal></goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <includeScope>compile</includeScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -58,12 +61,6 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
