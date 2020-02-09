@@ -58,7 +58,7 @@ public class CreateQuestionResource {
             }
 
             BigInteger bountyDrops = bounty.multiply(BigInteger.valueOf(1000000));
-            if (balance.compareTo(bountyDrops) < 0) {
+            if (balance.compareTo(bountyDrops) > 0) {
                 throw new WebApplicationException("Your balance does not have enough XRP to cover this bounty.", 400);
             }
             client.send(bountyDrops, WalletCache.MASTER_WALLET.getAddress());
