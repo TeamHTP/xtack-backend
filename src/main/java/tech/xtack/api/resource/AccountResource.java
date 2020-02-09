@@ -1,7 +1,6 @@
 package tech.xtack.api.resource;
 
 import com.codahale.metrics.annotation.Timed;
-import io.xpring.xrpl.XpringKitException;
 import tech.xtack.api.Database;
 import tech.xtack.api.model.Account;
 
