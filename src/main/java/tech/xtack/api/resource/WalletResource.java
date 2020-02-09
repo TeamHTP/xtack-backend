@@ -43,7 +43,7 @@ public class WalletResource {
                 Wallet wallet = WalletCache.getOrGenerate(account.getWalletMnemonic());
                 XtackWallet xtackWallet = new XtackWallet();
                 try {
-                    xtackWallet.setBalance(client.getBalance(wallet.getAddress()));
+                    xtackWallet.setBalance(client.getBalance(wallet.getAddress()).divide(BigInteger.valueOf(1000000)));
                 }
                 catch (StatusRuntimeException e) {
                     System.out.println(e.getMessage());
