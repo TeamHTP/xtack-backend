@@ -2,6 +2,7 @@ package tech.xtack.api.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
+import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XpringKitException;
 import tech.xtack.api.Database;
@@ -46,7 +47,15 @@ public class CreateQuestionResource {
             Account account = accOpt.get();
             Wallet wallet = WalletCache.getOrGenerate(account.getWalletMnemonic());
             XrpClient client = new XrpClient(wallet);
-            BigInteger balance = client.getBalance();
+            BigInteger balance = BigInteger.ZERO;
+            try {
+                balance = client.getBalance();
+            }
+            catch (StatusRuntimeException e) {
+                if (!e.getMessage().equals("NOT_FOUND: account not found")) {
+                    e.printStackTrace();
+                }
+            }
 
             BigInteger bountyDrops = bounty.multiply(BigInteger.valueOf(1000000));
             if (balance.compareTo(bountyDrops) < 0) {
