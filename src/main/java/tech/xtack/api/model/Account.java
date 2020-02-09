@@ -14,8 +14,6 @@ public class Account implements Principal {
     private String password;
     private String walletMnemonic;
     private String sessionToken;
-    private String xrpAddress;
-    private BigInteger xrpBalance;
 
     public Account() {}
 
@@ -53,7 +51,7 @@ public class Account implements Principal {
         return walletMnemonic;
     }
 
-    @JsonProperty
+    @JsonIgnore
     public String getSessionToken() {
         return sessionToken;
     }
@@ -67,19 +65,4 @@ public class Account implements Principal {
         return username;
     }
 
-    public String getXrpAddress() {
-        return xrpAddress;
-    }
-
-    public void setXrpAddress(String xrpAddress) {
-        this.xrpAddress = xrpAddress;
-    }
-
-    public BigInteger getXrpBalance() {
-        return xrpBalance;
-    }
-
-    public void setXrpBalance(BigInteger xrpBalance) {
-        this.xrpBalance = xrpBalance;
-    }
 }

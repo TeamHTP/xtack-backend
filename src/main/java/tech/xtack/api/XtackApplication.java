@@ -10,10 +10,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import tech.xtack.api.auth.XtackAuthenticator;
 import tech.xtack.api.auth.XtackAuthorizer;
 import tech.xtack.api.model.Account;
-import tech.xtack.api.resource.AccountResource;
-import tech.xtack.api.resource.AuthResource;
-import tech.xtack.api.resource.CreateAccountResource;
-import tech.xtack.api.resource.QuestionResource;
+import tech.xtack.api.resource.*;
 
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -56,5 +53,7 @@ public class XtackApplication extends Application<XtackConfiguration> {
         environment.jersey().register(questionResource);
         final AuthResource authResource = new AuthResource(database);
         environment.jersey().register(authResource);
+        final WalletResource walletResource = new WalletResource();
+        environment.jersey().register(walletResource);
     }
 }
