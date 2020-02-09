@@ -17,6 +17,10 @@ public class XrpClient {
         this.wallet = wallet;
     }
 
+    public BigInteger getBalance() throws XpringKitException {
+        return client.getBalance(wallet.getAddress());
+    }
+
     public Wallet getWallet() {
         return wallet;
     }

@@ -7,7 +7,7 @@ public class TestPasswordHash {
 
     @Test
     public void testHashPassword() throws NoSuchAlgorithmException {
-        System.out.println(AuthUtils.hashPassword("asdf"));
+        System.out.println(AuthUtils.hashPassword("password"));
     }
 
 }

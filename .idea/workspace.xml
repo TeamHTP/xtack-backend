@@ -2,15 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae2ac0f1-e28f-4cf7-8d5b-e3ed435e316a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/resource/AuthResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/TestPasswordHash.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/TestSeedDerivedWallet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/Database.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/XtackApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/XtackApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/auth/AuthUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/auth/AuthUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/model/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/model/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/resource/CreateAccountResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/resource/CreateAccountResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/resource/AccountResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/resource/AccountResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/xtack/api/xpring/XrpClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/xtack/api/xpring/XrpClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestPasswordHash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestPasswordHash.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,16 +133,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestSeedDerivedWallet" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="xtack-backend" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestSeedDerivedWallet" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.XtackApplication" />
       <item itemvalue="JUnit.TestGenerateWallet" />
       <item itemvalue="JUnit.TestPasswordHash" />
+      <item itemvalue="JUnit.TestSeedDerivedWallet" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.XtackApplication" />
-        <item itemvalue="JUnit.TestPasswordHash" />
         <item itemvalue="JUnit.TestGenerateWallet" />
+        <item itemvalue="JUnit.TestSeedDerivedWallet" />
+        <item itemvalue="JUnit.TestPasswordHash" />
+        <item itemvalue="Application.XtackApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -186,7 +194,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1581192749691</updated>
-      <workItem from="1581192754187" duration="12269000" />
+      <workItem from="1581192754187" duration="15573000" />
     </task>
     <servers />
   </component>
@@ -218,45 +226,45 @@
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
     <state x="203" y="-859" width="910" height="456" key="EnvironmentVariablesDialog/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206343414" />
-    <state width="1259" height="519" key="GridCell.Tab.0.bottom" timestamp="1581206530656">
+    <state width="1259" height="423" key="GridCell.Tab.0.bottom" timestamp="1581211891475">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.0.bottom/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530656" />
+    <state width="1259" height="423" key="GridCell.Tab.0.bottom/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211891475" />
     <state width="1259" height="519" key="GridCell.Tab.0.bottom/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563113" />
-    <state width="1259" height="519" key="GridCell.Tab.0.center" timestamp="1581206530654">
+    <state width="1259" height="423" key="GridCell.Tab.0.center" timestamp="1581211891474">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.0.center/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530654" />
+    <state width="1259" height="423" key="GridCell.Tab.0.center/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211891474" />
     <state width="1259" height="519" key="GridCell.Tab.0.center/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563112" />
-    <state width="1259" height="519" key="GridCell.Tab.0.left" timestamp="1581206530653">
+    <state width="1259" height="423" key="GridCell.Tab.0.left" timestamp="1581211891473">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.0.left/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530653" />
+    <state width="1259" height="423" key="GridCell.Tab.0.left/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211891473" />
     <state width="1259" height="519" key="GridCell.Tab.0.left/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563111" />
-    <state width="1259" height="519" key="GridCell.Tab.0.right" timestamp="1581206530655">
+    <state width="1259" height="423" key="GridCell.Tab.0.right" timestamp="1581211891475">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.0.right/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530655" />
+    <state width="1259" height="423" key="GridCell.Tab.0.right/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211891475" />
     <state width="1259" height="519" key="GridCell.Tab.0.right/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563113" />
-    <state width="1259" height="519" key="GridCell.Tab.1.bottom" timestamp="1581206530562">
+    <state width="1259" height="519" key="GridCell.Tab.1.bottom" timestamp="1581211742675">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.1.bottom/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530562" />
+    <state width="1259" height="519" key="GridCell.Tab.1.bottom/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211742675" />
     <state width="1259" height="519" key="GridCell.Tab.1.bottom/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563118" />
-    <state width="1259" height="519" key="GridCell.Tab.1.center" timestamp="1581206530560">
+    <state width="1259" height="519" key="GridCell.Tab.1.center" timestamp="1581211742674">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.1.center/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530560" />
+    <state width="1259" height="519" key="GridCell.Tab.1.center/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211742674" />
     <state width="1259" height="519" key="GridCell.Tab.1.center/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563115" />
-    <state width="1259" height="519" key="GridCell.Tab.1.left" timestamp="1581206530560">
+    <state width="1259" height="519" key="GridCell.Tab.1.left" timestamp="1581211742673">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.1.left/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530560" />
+    <state width="1259" height="519" key="GridCell.Tab.1.left/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211742673" />
     <state width="1259" height="519" key="GridCell.Tab.1.left/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563114" />
-    <state width="1259" height="519" key="GridCell.Tab.1.right" timestamp="1581206530561">
+    <state width="1259" height="519" key="GridCell.Tab.1.right" timestamp="1581211742674">
       <screen x="-404" y="-1440" width="2560" height="1440" />
     </state>
-    <state width="1259" height="519" key="GridCell.Tab.1.right/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581206530561" />
+    <state width="1259" height="519" key="GridCell.Tab.1.right/-404.-1440.2560.1440/0.0.2048.1280@-404.-1440.2560.1440" timestamp="1581211742674" />
     <state width="1259" height="519" key="GridCell.Tab.1.right/-404.-1440.2560.1440/0.23.2048.1257@-404.-1440.2560.1440" timestamp="1581205563117" />
     <state width="219" height="457" key="HiddenNamespacesPopup" timestamp="1581196399960">
       <screen x="-404" y="-1440" width="2560" height="1440" />

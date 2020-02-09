@@ -3,6 +3,7 @@ package tech.xtack.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigInteger;
 import java.security.Principal;
 
 public class Account implements Principal {
@@ -13,6 +14,8 @@ public class Account implements Principal {
     private String password;
     private String walletMnemonic;
     private String sessionToken;
+    private String xrpAddress;
+    private BigInteger xrpBalance;
 
     public Account() {}
 
@@ -62,5 +65,21 @@ public class Account implements Principal {
     @Override
     public String getName() {
         return username;
+    }
+
+    public String getXrpAddress() {
+        return xrpAddress;
+    }
+
+    public void setXrpAddress(String xrpAddress) {
+        this.xrpAddress = xrpAddress;
+    }
+
+    public BigInteger getXrpBalance() {
+        return xrpBalance;
+    }
+
+    public void setXrpBalance(BigInteger xrpBalance) {
+        this.xrpBalance = xrpBalance;
     }
 }
