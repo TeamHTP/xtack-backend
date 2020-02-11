@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 public class XrpClient {
 
-    private static final String XRP_ADAPTER_ROOT = "htrps://xrp-adapter.xtack.space";
+    private static final String XRP_ADAPTER_ROOT = "https://xrp-adapter.xtack.space";
     private static final String BEARER_TOKEN = System.getenv("BEARER_TOKEN");
 
     public static BigInteger getBalance(String walletAddress) throws IOException {
