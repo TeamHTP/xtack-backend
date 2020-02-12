@@ -261,7 +261,7 @@ public class Database {
     public ArrayList<XtackTransaction> getTransactionsForAccount(String uuid) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
         PreparedStatement ps;
-        ps = connection.prepareStatement("SELECT * FROM transactions WHERE uuid = ?::uuid;");
+        ps = connection.prepareStatement("SELECT * FROM transactions WHERE src_account_uuid = ?::uuid OR dest_account_uuid = ?::uuid;");
         ps.setString(1, uuid);
         ResultSet rs = ps.executeQuery();
         connection.close();
