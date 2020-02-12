@@ -38,6 +38,15 @@ public class Database {
         return getAccountFromResultSet(rs);
     }
 
+    public Account getAccountFromDestinationTag(int destinationTag) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE destination_tag = ?;");
+        ps.setInt(1, destinationTag);
+        ResultSet rs = ps.executeQuery();
+        connection.close();
+        return getAccountFromResultSet(rs);
+    }
+
     public Account getAccountFromEmailAndPassword(String email, String password) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement("SELECT * FROM accounts WHERE email = ? AND password = ?;");
