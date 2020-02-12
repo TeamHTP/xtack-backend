@@ -27,7 +27,7 @@ public class WithdrawResource {
         try {
             XtackWallet wallet = XrpClient.getWallet(accOpt.get().getWalletMnemonic());
             BigInteger balance = XrpClient.getBalance(wallet.getAddresses().getXAddress());
-            XrpClient.send(balance.subtract(BigInteger.valueOf(20)), addressParam.get(), wallet);
+            XrpClient.send(balance.subtract(BigInteger.valueOf(100)), addressParam.get(), wallet);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
