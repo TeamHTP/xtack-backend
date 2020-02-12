@@ -41,6 +41,7 @@ public class WithdrawResource {
                     XtackTransactionType.WITHDRAW);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, fee,
                     XtackTransactionType.RIPPLE_FEE);
+            database.addBalance(account.getUuid(), -balance);
             XpringClient.send(BigInteger.valueOf(balance - fee), addressParam.get(), XtackWallet.MASTER_WALLET);
             return true;
         } catch (IOException | SQLException | URISyntaxException e) {
