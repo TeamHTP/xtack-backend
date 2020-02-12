@@ -258,6 +258,35 @@ public class Database {
         return uuid;
     }
 
+    public ArrayList<XtackTransaction> getTransactionsForAccount(String uuid) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps;
+        ps = connection.prepareStatement("SELECT * FROM transactions WHERE uuid = ?::uuid;");
+        ps.setString(1, uuid);
+        ResultSet rs = ps.executeQuery();
+        connection.close();
+        ArrayList<XtackTransaction> transactions = new ArrayList<>();
+        do {
+            transactions.add(getTransactionFromResultSet(rs));
+        }
+        while (transactions.get(transactions.size() - 1) != null);
+        transactions.remove(transactions.size() - 1);
+        return transactions;
+    }
+
+    public XtackTransaction getTransactionFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            String uuid = rs.getString("uuid");
+            String sourceAccountUuid = rs.getString("src_account_uuid");
+            String destinationAccountUuid = rs.getString("dest_account_uuid");
+            long drops = rs.getLong("drops");
+            XtackTransactionType type = XtackTransactionType.valueOf(rs.getString("type"));
+            Timestamp timestamp = rs.getTimestamp("timestamp");
+            return new XtackTransaction(uuid, sourceAccountUuid, destinationAccountUuid, drops, type, timestamp);
+        }
+        return null;
+    }
+
     public void addBalance(String accountUuid, long dropsToAdd) throws SQLException, URISyntaxException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET balance = balance + ? WHERE uuid = ?::uuid;");

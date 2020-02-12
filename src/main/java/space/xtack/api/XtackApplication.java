@@ -91,7 +91,9 @@ public class XtackApplication extends Application<XtackConfiguration> {
         environment.jersey().register(indexQuestionResource);
         final IndexAnswersResource indexAnswersResource = new IndexAnswersResource(database);
         environment.jersey().register(indexAnswersResource);
-        final WithdrawResource withdrawResource = new WithdrawResource();
+        final WithdrawResource withdrawResource = new WithdrawResource(database);
         environment.jersey().register(withdrawResource);
+        final TransactionHistoryResource transactionHistoryResource = new TransactionHistoryResource(database);
+        environment.jersey().register(transactionHistoryResource);
     }
 }
