@@ -263,6 +263,7 @@ public class Database {
         PreparedStatement ps;
         ps = connection.prepareStatement("SELECT * FROM transactions WHERE src_account_uuid = ?::uuid OR dest_account_uuid = ?::uuid;");
         ps.setString(1, uuid);
+        ps.setString(2, uuid);
         ResultSet rs = ps.executeQuery();
         connection.close();
         ArrayList<XtackTransaction> transactions = new ArrayList<>();
