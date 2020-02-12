@@ -35,26 +35,26 @@ public class CreateQuestionResource {
     @Timed
     @RolesAllowed("USER")
     public Question post(@FormParam("title") Optional<String> titleParam, @FormParam("body") Optional<String> bodyParam,
-                         @FormParam("bounty") Optional<Long> bountyParam, @Auth Optional<Account> accOpt) {
+                         @FormParam("bounty") Optional<Double> bountyParam, @Auth Optional<Account> accOpt) {
         if (!titleParam.isPresent() || !bodyParam.isPresent() || !bountyParam.isPresent() || !accOpt.isPresent()) {
             throw new WebApplicationException(400);
         }
         try {
             String title = titleParam.get();
             String body = bodyParam.get();
-            Long bounty = bountyParam.get();
+            Double bounty = bountyParam.get();
             Account account = accOpt.get();
 
-            long bountyDrops = bounty * 1000000;
+            long bountyDrops = (long) (bounty * 1000000);
             if (bountyDrops > account.getBalance()) {
                 throw new WebApplicationException("Your balance does not have enough XRP to cover this bounty.", 400);
             }
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, bountyDrops,
                     XtackTransactionType.QUESTION_CREATION);
             database.addBalance(account.getUuid(), -bountyDrops);
-            String uuid = database.createQuestion(title, body, bounty, account.getUuid());
+            String uuid = database.createQuestion(title, body, bountyDrops, account.getUuid());
 
-            return new Question(uuid, title, account.getUuid(), bounty, bounty, body,
+            return new Question(uuid, title, account.getUuid(), bountyDrops, bountyDrops, body,
                     0, new ArrayList<>(),
                     0, Timestamp.from(Instant.now()), null);
         } catch (SQLException | URISyntaxException e) {
