@@ -31,6 +31,9 @@ public class Tasks {
                     }
                     System.out.println(transaction.getId());
                     Account account = database.getAccountFromDestinationTag(transaction.getTag());
+                    if (account == null) {
+                        continue;
+                    }
                     database.createTransaction(Database.SYSTEM_ACCOUNT_UUID, account.getUuid(), transaction.getDrops(),
                             XtackTransactionType.DEPOSIT);
                     database.addBalance(account.getUuid(), transaction.getDrops());
