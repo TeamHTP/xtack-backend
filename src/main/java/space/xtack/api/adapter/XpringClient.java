@@ -34,6 +34,17 @@ public class XpringClient {
         }
     }
 
+    public static WalletAddresses getEncodedAddresses(String classicAddress, int tag) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(XRP_ADAPTER_ROOT + "/xrp/encode_addresses?classic=" + classicAddress + "&tag=" + tag)
+                .header("Authorization", "Bearer " + BEARER_TOKEN)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return new Gson().fromJson(response.body().string(), WalletAddresses.class);
+        }
+    }
+
     public static BigInteger getBalance(String walletAddress) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

@@ -9,12 +9,12 @@ public class XtackWallet {
     public static XtackWallet MASTER_WALLET;
 
     private WalletAddresses addresses;
-    private BigInteger balance;
+    private long balance;
     private String mnemonic;
 
     public XtackWallet() {}
 
-    public XtackWallet(WalletAddresses addresses, BigInteger balance, String mnemonic) {
+    public XtackWallet(WalletAddresses addresses, long balance, String mnemonic) {
         this.addresses = addresses;
         this.balance = balance;
         this.mnemonic = mnemonic;
@@ -24,11 +24,11 @@ public class XtackWallet {
         return addresses;
     }
 
-    public void setBalance(BigInteger balance) {
+    public void setBalance(long balance) {
         this.balance = balance;
     }
 
-    public BigInteger getBalance() {
+    public long getBalance() {
         return balance;
     }
 
