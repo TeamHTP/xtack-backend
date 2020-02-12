@@ -21,6 +21,9 @@ public class XpringClient {
 
     public static ArrayList<RippleTransaction> getTransactions(String address, String start) throws IOException {
         OkHttpClient client = new OkHttpClient();
+        if (start == null) {
+            start = "";
+        }
         Request request = new Request.Builder()
                 .url(XRP_ADAPTER_ROOT + "/ripple/transactions?address=" + address + "&start=" + start)
                 .header("Authorization", "Bearer " + BEARER_TOKEN)
