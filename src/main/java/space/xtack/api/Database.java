@@ -245,6 +245,7 @@ public class Database {
         ps.setLong(4, amount);
         ps.setString(5, type.name());
         ps.execute();
+        connection.close();
         return uuid;
     }
 
@@ -262,8 +263,11 @@ public class Database {
         PreparedStatement ps = connection.prepareStatement("SELECT value FROM system WHERE key = ?;");
         ps.setString(1, key);
         ResultSet rs = ps.executeQuery();
-        String value = rs.getString("value");
         connection.close();
+        String value = null;
+        if (rs.next()) {
+            value = rs.getString("value");
+        }
         return value;
     }
 
