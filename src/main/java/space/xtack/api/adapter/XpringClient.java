@@ -30,8 +30,7 @@ public class XpringClient {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             Type type = new TypeToken<ArrayList<RippleTransaction>>(){}.getType();
-            ArrayList<RippleTransaction> transactions = new Gson().fromJson(response.body().string(), type);
-            return transactions;
+            return new Gson().fromJson(response.body().string(), type);
         }
     }
 

@@ -26,6 +26,7 @@ public class Tasks {
                 for (RippleTransaction transaction : transactions) {
                     System.out.println(transaction.getTimestamp());
                 }
+                System.out.println(transactions.size() + " transactions processed");
             } catch (IOException | URISyntaxException | SQLException e) {
                 e.printStackTrace();
             }
