@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Optional;
 
 @Path("/wallet")
@@ -32,7 +33,7 @@ public class WalletResource {
             return new XtackWallet(
                     XpringClient.getEncodedAddresses(XtackWallet.MASTER_WALLET.getAddresses().getRAddress(),
                             account.getDestinationTag()),
-                    account.getBalance(), null);
+                    BigInteger.valueOf(account.getBalance()), null);
         } catch (IOException e) {
             e.printStackTrace();
             throw new WebApplicationException(500);
