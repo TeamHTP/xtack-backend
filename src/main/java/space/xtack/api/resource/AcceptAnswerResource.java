@@ -3,19 +3,13 @@ package space.xtack.api.resource;
 import io.dropwizard.auth.Auth;
 import org.checkerframework.checker.units.qual.Time;
 import space.xtack.api.Database;
-import space.xtack.api.model.Account;
-import space.xtack.api.model.Answer;
-import space.xtack.api.model.Question;
-import space.xtack.api.model.XtackWallet;
-import space.xtack.api.xpring.XrpClient;
+import space.xtack.api.model.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
-import java.io.IOException;
-import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -47,19 +41,21 @@ public class AcceptAnswerResource {
                 database.acceptAnswer(questionUuid, answerUuid);
                 Answer answer = database.getAnswer(answerUuid);
                 Account answerAuthor = database.getAccount(database.getAnswer(answerUuid).getAuthorUuid());
-                XtackWallet wallet = XrpClient.getWallet(answerAuthor.getWalletMnemonic());
-
-                XrpClient.send(question.getBountyMin()
-                        .multiply(BigInteger.valueOf(1000000))
-                        .subtract(question.getBountyMin().multiply(BigInteger.valueOf(5000))), wallet.getAddresses().getXAddress(),
-                        XtackWallet.MASTER_WALLET);
-
+                long bountyDrops = question.getBountyMin() - 500;
+                XtackTransaction transaction = new XtackTransaction(null,
+                        Database.SYSTEM_ACCOUNT_UUID, answerAuthor.getUuid(),
+                        bountyDrops, XtackTransactionType.ANSWER_BOUNTY, null);
+                database.createTransaction(transaction.getSourceAccountUuid(), transaction.getDestinationAccountUuid(),
+                        transaction.getDrops(), transaction.getType());
+                database.createTransaction(transaction.getDestinationAccountUuid(), transaction.getSourceAccountUuid(),
+                        500, XtackTransactionType.PLATFORM_FEE);
+                database.addBalance(answerAuthor.getUuid(), bountyDrops);
                 return answer;
             }
             else {
                 throw new WebApplicationException(403);
             }
-        } catch (SQLException | URISyntaxException | IOException e) {
+        } catch (SQLException | URISyntaxException e) {
             e.printStackTrace();
             throw new WebApplicationException(500);
         }

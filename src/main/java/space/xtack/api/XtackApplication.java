@@ -13,7 +13,7 @@ import space.xtack.api.auth.XtackAuthorizer;
 import space.xtack.api.model.Account;
 import space.xtack.api.model.XtackWallet;
 import space.xtack.api.resource.*;
-import space.xtack.api.xpring.XrpClient;
+import space.xtack.api.adapter.XpringClient;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
@@ -24,7 +24,7 @@ import java.util.EnumSet;
 public class XtackApplication extends Application<XtackConfiguration> {
     public static void main(String[] args) throws Exception {
         System.setProperty("dw.server.applicationConnectors[0].port", System.getenv("PORT"));
-        XtackWallet.MASTER_WALLET = XrpClient.getWallet(System.getenv("MASTER_MNEMONIC"));
+        XtackWallet.MASTER_WALLET = XpringClient.getWallet(System.getenv("MASTER_MNEMONIC"));
         new XtackApplication().run(args);
     }
 
@@ -41,6 +41,8 @@ public class XtackApplication extends Application<XtackConfiguration> {
 
     public void run(XtackConfiguration xtackConfiguration, Environment environment) throws URISyntaxException, SQLException {
         Database database = new Database();
+
+        Tasks.startFetchTransactionsTask(database);
 
         // CORS
         final FilterRegistration.Dynamic cors =

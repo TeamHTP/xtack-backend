@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import space.xtack.api.model.Account;
 import space.xtack.api.model.XtackWallet;
-import space.xtack.api.xpring.XrpClient;
+import space.xtack.api.adapter.XpringClient;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -25,9 +25,8 @@ public class WithdrawResource {
             throw new WebApplicationException(400);
         }
         try {
-            XtackWallet wallet = XrpClient.getWallet(accOpt.get().getWalletMnemonic());
-            BigInteger balance = XrpClient.getBalance(wallet.getAddresses().getXAddress());
-            XrpClient.send(balance.subtract(BigInteger.valueOf(100)), addressParam.get(), wallet);
+            BigInteger balance = BigInteger.valueOf(accOpt.get().getBalance());
+            XpringClient.send(balance, addressParam.get(), XtackWallet.MASTER_WALLET);
             return true;
         } catch (IOException e) {
             e.printStackTrace();

@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import space.xtack.api.Database;
 import space.xtack.api.auth.AuthUtils;
 import space.xtack.api.model.Account;
-import space.xtack.api.xpring.XrpClient;
+import space.xtack.api.adapter.XpringClient;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -36,13 +36,12 @@ public class CreateAccountResource {
         String password = passwordParam.get();
         String email = emailParam.get();
         try {
-            String mnemonic = XrpClient.getRandomWallet().getMnemonic();
-            String uuid = database.createAccount(username, AuthUtils.hashPassword(password), email, mnemonic);
-            return new Account(uuid, username, AuthUtils.hashPassword(password), email, mnemonic, null);
+            String uuid = database.createAccount(username, AuthUtils.hashPassword(password), email);
+            return new Account(uuid, username, AuthUtils.hashPassword(password), email, null, 0, -1);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new WebApplicationException("Username or email already exists.", 400);
-        } catch (URISyntaxException | NoSuchAlgorithmException | IOException e) {
+        } catch (URISyntaxException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new WebApplicationException(503);
         }

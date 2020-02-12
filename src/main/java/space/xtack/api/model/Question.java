@@ -11,8 +11,8 @@ public class Question {
     private String uuid;
     private String title;
     private String authorUuid;
-    private BigInteger bountyMin;
-    private BigInteger bountyMax;
+    private long bountyMin;
+    private long bountyMax;
     private String body;
     private int status;
     private ArrayList<Tag> tags;
@@ -22,7 +22,7 @@ public class Question {
 
     public Question() {}
 
-    public Question(String uuid, String title, String authorUuid, BigInteger bountyMin, BigInteger bountyMax, String body,
+    public Question(String uuid, String title, String authorUuid, long bountyMin, long bountyMax, String body,
                     int status, ArrayList<Tag> tags, long score, Timestamp timestamp, String acceptedAnswerUuid) {
         this.uuid = uuid;
         this.title = title;
@@ -51,12 +51,12 @@ public class Question {
     }
 
     @JsonProperty("bounty_min")
-    public BigInteger getBountyMin() {
+    public long getBountyMin() {
         return bountyMin;
     }
 
     @JsonProperty("bounty_max")
-    public BigInteger getBountyMax() {
+    public long getBountyMax() {
         return bountyMax;
     }
 

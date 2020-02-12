@@ -12,18 +12,26 @@ public class Account implements Principal {
     private String username;
     private String email;
     private String password;
-    private String walletMnemonic;
     private String sessionToken;
+    private long balance;
+    private int destinationTag;
 
     public Account() {}
 
-    public Account(String uuid, String username, String email, String password, String walletMnemonic, String sessionToken) {
+    public Account(String uuid, String username, String email, String password, String sessionToken, long balance, int destinationTag) {
         this.uuid = uuid;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.walletMnemonic = walletMnemonic;
         this.sessionToken = sessionToken;
+        this.balance = balance;
+        this.destinationTag = destinationTag;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getName() {
+        return username;
     }
 
     @JsonProperty
@@ -47,11 +55,6 @@ public class Account implements Principal {
     }
 
     @JsonIgnore
-    public String getWalletMnemonic() {
-        return walletMnemonic;
-    }
-
-    @JsonIgnore
     public String getSessionToken() {
         return sessionToken;
     }
@@ -60,9 +63,13 @@ public class Account implements Principal {
         this.sessionToken = sessionToken;
     }
 
-    @Override
-    public String getName() {
-        return username;
+    public long getBalance() {
+        return balance;
+    }
+
+    @JsonProperty("destination_tag")
+    public int getDestinationTag() {
+        return destinationTag;
     }
 
 }

@@ -5,8 +5,9 @@ import io.dropwizard.auth.Auth;
 import space.xtack.api.Database;
 import space.xtack.api.model.Account;
 import space.xtack.api.model.Question;
+import space.xtack.api.model.XtackTransactionType;
 import space.xtack.api.model.XtackWallet;
-import space.xtack.api.xpring.XrpClient;
+import space.xtack.api.adapter.XpringClient;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -34,28 +35,29 @@ public class CreateQuestionResource {
     @Timed
     @RolesAllowed("USER")
     public Question post(@FormParam("title") Optional<String> titleParam, @FormParam("body") Optional<String> bodyParam,
-                         @FormParam("bounty") Optional<BigInteger> bountyParam, @Auth Optional<Account> accOpt) {
+                         @FormParam("bounty") Optional<Long> bountyParam, @Auth Optional<Account> accOpt) {
         if (!titleParam.isPresent() || !bodyParam.isPresent() || !bountyParam.isPresent() || !accOpt.isPresent()) {
             throw new WebApplicationException(400);
         }
         try {
             String title = titleParam.get();
             String body = bodyParam.get();
-            BigInteger bounty = bountyParam.get();
+            Long bounty = bountyParam.get();
             Account account = accOpt.get();
-            XtackWallet wallet = XrpClient.getWallet(account.getWalletMnemonic());
-            BigInteger balance = BigInteger.ZERO;
-            balance = XrpClient.getBalance(wallet.getAddresses().getXAddress());
 
-            BigInteger bountyDrops = bounty.multiply(BigInteger.valueOf(1000000));
-            if (balance.compareTo(bountyDrops) < 0) {
+            long bountyDrops = bounty * 1000000;
+            if (bountyDrops > account.getBalance()) {
                 throw new WebApplicationException("Your balance does not have enough XRP to cover this bounty.", 400);
             }
-            XrpClient.send(bountyDrops, XtackWallet.MASTER_WALLET.getAddresses().getXAddress(), wallet);
+            database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, bountyDrops,
+                    XtackTransactionType.QUESTION_CREATION);
+            database.addBalance(account.getUuid(), -bountyDrops);
             String uuid = database.createQuestion(title, body, bounty, account.getUuid());
-            return new Question(uuid, title, account.getUuid(), bounty, bounty, body, 0, new ArrayList<>(),
+
+            return new Question(uuid, title, account.getUuid(), bounty, bounty, body,
+                    0, new ArrayList<>(),
                     0, Timestamp.from(Instant.now()), null);
-        } catch (SQLException | URISyntaxException | IOException e) {
+        } catch (SQLException | URISyntaxException e) {
             e.printStackTrace();
             throw new WebApplicationException(500);
         }

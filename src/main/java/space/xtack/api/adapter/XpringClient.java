@@ -1,19 +1,36 @@
-package space.xtack.api.xpring;
+package space.xtack.api.adapter;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import space.xtack.api.model.RippleTransaction;
 import space.xtack.api.model.WalletAddresses;
 import space.xtack.api.model.XtackWallet;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
-public class XrpClient {
+public class XpringClient {
 
     private static final String XRP_ADAPTER_ROOT = "https://xrp-adapter.xtack.space";
     private static final String BEARER_TOKEN = System.getenv("BEARER_TOKEN");
+
+    public static ArrayList<RippleTransaction> getTransactions(String address, String start) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(XRP_ADAPTER_ROOT + "/ripple/transactions?address=" + address + "&start=" + start)
+                .header("Authorization", "Bearer " + BEARER_TOKEN)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            Type type = new TypeToken<ArrayList<RippleTransaction>>(){}.getType();
+            ArrayList<RippleTransaction> transactions = new Gson().fromJson(response.body().string(), type);
+            return transactions;
+        }
+    }
 
     public static BigInteger getBalance(String walletAddress) throws IOException {
         OkHttpClient client = new OkHttpClient();

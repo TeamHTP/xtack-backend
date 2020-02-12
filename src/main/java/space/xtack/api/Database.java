@@ -1,9 +1,6 @@
 package space.xtack.api;
 
-import space.xtack.api.model.Account;
-import space.xtack.api.model.Answer;
-import space.xtack.api.model.Question;
-import space.xtack.api.model.Tag;
+import space.xtack.api.model.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,6 +11,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Database {
+
+    public static final String SYSTEM_ACCOUNT_UUID = "747deebc-6ec8-489a-974d-e146f0a3d0ec";
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
@@ -90,7 +89,7 @@ public class Database {
             long score = rs.getLong("score");
             Timestamp timestamp = rs.getTimestamp("timestamp");
             String acceptedAnswerUuid = rs.getString("accepted_answer_uuid");
-            return new Question(uuid, title, authorUuid, BigInteger.valueOf(bountyMin), BigInteger.valueOf(bountyMax),
+            return new Question(uuid, title, authorUuid, bountyMin, bountyMax,
                     body, status, tags, score, timestamp,
                     acceptedAnswerUuid);
         }
@@ -155,24 +154,23 @@ public class Database {
             String username = rs.getString("username");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            String walletMnemonic = rs.getString("wallet_mnemonic");
             String sessionToken = rs.getString("session_token");
-            return new Account(uuid, username, email, password, walletMnemonic, sessionToken);
+            long balance = rs.getLong("balance");
+            int destinationTag = rs.getInt("destination_tag");
+            return new Account(uuid, username, email, password, sessionToken, balance, destinationTag);
         }
         return null;
     }
 
-    public String createAccount(String username, String password, String email, String walletMnemonic) throws URISyntaxException, SQLException {
+    public String createAccount(String username, String password, String email) throws URISyntaxException, SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO accounts (uuid, username, password, email, wallet_mnemonic) VALUES (?::uuid, ?, ?, ?, ?);");
+                "INSERT INTO accounts (uuid, username, password, email) VALUES (?::uuid, ?, ?, ?);");
         String uuid = UUID.randomUUID().toString();
         ps.setString(1, uuid);
         ps.setString(2, username);
         ps.setString(3, password);
         ps.setString(4, email);
-        // TODO: encrypt mnemonic
-        ps.setString(5, walletMnemonic);
         ps.execute();
         connection.close();
         return uuid;
@@ -188,7 +186,7 @@ public class Database {
         connection.close();
     }
 
-    public String createQuestion(String title, String body, BigInteger bounty, String authorUuid)
+    public String createQuestion(String title, String body, long bounty, String authorUuid)
             throws SQLException, URISyntaxException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(
@@ -197,7 +195,7 @@ public class Database {
         ps.setString(1, title);
         ps.setString(2, authorUuid);
         ps.setString(3, body);
-        ps.setBigDecimal(4, new BigDecimal(bounty));
+        ps.setLong(4, bounty);
         ps.setString(5, uuid);
         ps.execute();
         connection.close();
@@ -220,7 +218,7 @@ public class Database {
 
     public boolean acceptAnswer(String questionUuid, String answerUuid) throws SQLException, URISyntaxException {
         Connection connection = getConnection();
-        PreparedStatement queryPs = connection.prepareStatement("SELECT * FROM questions WHERE accepted_answer_uuid = NULL AND uuid = ?::uuid;");
+        PreparedStatement queryPs = connection.prepareStatement("SELECT * FROM questions WHERE accepted_answer_uuid IS NULL AND uuid = ?::uuid;");
         queryPs.setString(1, questionUuid);
         ResultSet rs = queryPs.executeQuery();
         if (rs.next()) {
@@ -230,6 +228,51 @@ public class Database {
         questionsPs.setString(1, answerUuid);
         questionsPs.setString(2, questionUuid);
         questionsPs.execute();
+        connection.close();
         return true;
+    }
+
+    public String createTransaction(String sourceAccountUuid, String destinationAccountUuid, long amount,
+                                    XtackTransactionType type) throws SQLException, URISyntaxException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO transactions (uuid, src_account_uuid, dest_account_uuid, drops, type) " +
+                        "VALUES (?::uuid, ?::uuid, ?::uuid, ?, ?);");
+        String uuid = UUID.randomUUID().toString();
+        ps.setString(1, uuid);
+        ps.setString(2, sourceAccountUuid);
+        ps.setString(3, destinationAccountUuid);
+        ps.setLong(4, amount);
+        ps.setString(5, type.name());
+        ps.execute();
+        return uuid;
+    }
+
+    public void addBalance(String accountUuid, long dropsToAdd) throws SQLException, URISyntaxException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("UPDATE accounts SET balance = balance + ? WHERE uuid = ?::uuid;");
+        ps.setLong(1, dropsToAdd);
+        ps.setString(2, accountUuid);
+        ps.execute();
+        connection.close();
+    }
+
+    public String getSystemValue(String key) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("SELECT value FROM system WHERE key = ?;");
+        ps.setString(1, key);
+        ResultSet rs = ps.executeQuery();
+        String value = rs.getString("value");
+        connection.close();
+        return value;
+    }
+
+    public void setSystemValue(String key, String value) throws URISyntaxException, SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement("UPDATE system SET value = ? WHERE key = ?;");
+        ps.setString(1, value);
+        ps.setString(2, key);
+        ps.execute();
+        connection.close();
     }
 }
