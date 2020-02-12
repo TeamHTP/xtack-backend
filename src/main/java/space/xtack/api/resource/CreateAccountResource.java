@@ -39,7 +39,10 @@ public class CreateAccountResource {
             String mnemonic = XrpClient.getRandomWallet().getMnemonic();
             String uuid = database.createAccount(username, AuthUtils.hashPassword(password), email, mnemonic);
             return new Account(uuid, username, AuthUtils.hashPassword(password), email, mnemonic, null);
-        } catch (URISyntaxException | SQLException | NoSuchAlgorithmException | IOException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new WebApplicationException("Username or email already exists.", 400);
+        } catch (URISyntaxException | NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
             throw new WebApplicationException(503);
         }
