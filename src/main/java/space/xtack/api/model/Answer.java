@@ -1,5 +1,7 @@
 package space.xtack.api.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Timestamp;
 
 public class Answer {
@@ -29,10 +31,12 @@ public class Answer {
         return uuid;
     }
 
+    @JsonProperty("question_uuid")
     public String getQuestionUuid() {
         return questionUuid;
     }
 
+    @JsonProperty("author_uuid")
     public String getAuthorUuid() {
         return authorUuid;
     }
