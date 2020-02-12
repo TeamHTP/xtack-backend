@@ -38,7 +38,9 @@ public class Tasks {
                             XtackTransactionType.DEPOSIT);
                     database.addBalance(account.getUuid(), transaction.getDrops());
                 }
-                database.setSystemValue("last_processed_transaction_id", transactions.get(transactions.size() - 1).getId());
+                if (transactions.size() > 0) {
+                    database.setSystemValue("last_processed_transaction_id", transactions.get(transactions.size() - 1).getId());
+                }
                 System.out.println(transactions.size() + " transactions processed");
             } catch (IOException | URISyntaxException | SQLException e) {
                 e.printStackTrace();
