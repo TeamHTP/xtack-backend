@@ -6,6 +6,7 @@ public enum XtackTransactionType {
     ANSWER_BOUNTY,
     DEPOSIT,
     WITHDRAW,
-    PLATFORM_FEE
+    PLATFORM_FEE,
+    RIPPLE_FEE
 
 }

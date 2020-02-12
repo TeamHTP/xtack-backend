@@ -87,8 +87,18 @@ public class XpringClient {
                 .header("Authorization", "Bearer " + BEARER_TOKEN)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            String txId = new Gson().fromJson(response.body().string(), String.class);
-            return txId;
+            return new Gson().fromJson(response.body().string(), String.class);
+        }
+    }
+
+    public static long getFee() throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(XRP_ADAPTER_ROOT + "/ripple/fee")
+                .header("Authorization", "Bearer " + BEARER_TOKEN)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return new Gson().fromJson(response.body().string(), Long.class);
         }
     }
 
