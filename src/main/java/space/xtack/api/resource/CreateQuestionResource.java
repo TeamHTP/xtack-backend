@@ -53,9 +53,9 @@ public class CreateQuestionResource {
             if (bountyDrops > account.getBalance()) {
                 throw new WebApplicationException("Your balance does not have enough XRP to cover this bounty.", 400);
             }
+            database.addBalance(account.getUuid(), -bountyDrops);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, bountyDrops,
                     XtackTransactionType.QUESTION_CREATION, null);
-            database.addBalance(account.getUuid(), -bountyDrops);
             String uuid = database.createQuestion(title, body, bountyDrops, account.getUuid());
 
             return new Question(uuid, title, account.getUuid(), bountyDrops, bountyDrops, body,
