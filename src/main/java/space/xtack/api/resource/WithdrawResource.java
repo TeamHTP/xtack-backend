@@ -37,12 +37,12 @@ public class WithdrawResource {
             Account account = accOpt.get();
             long balance = account.getBalance();
             long fee = XpringClient.getFee();
+            XpringClient.send(BigInteger.valueOf(balance - fee), addressParam.get(), XtackWallet.MASTER_WALLET);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, balance - fee,
                     XtackTransactionType.WITHDRAW);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, fee,
                     XtackTransactionType.RIPPLE_FEE);
             database.addBalance(account.getUuid(), -balance);
-            XpringClient.send(BigInteger.valueOf(balance - fee), addressParam.get(), XtackWallet.MASTER_WALLET);
             return true;
         } catch (IOException | SQLException | URISyntaxException e) {
             e.printStackTrace();
