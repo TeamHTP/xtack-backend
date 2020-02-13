@@ -37,19 +37,21 @@ public class AcceptAnswerResource {
                 if (question.getAcceptedAnswerUuid() != null) {
                     throw new WebApplicationException("Question already has an accepted answer.", 400);
                 }
-                database.acceptAnswer(questionUuid, answerUuid);
-                Answer answer = database.getAnswer(answerUuid);
-                Account answerAuthor = database.getAccount(database.getAnswer(answerUuid).getAuthorUuid());
-                long bountyDrops = question.getBountyMin() - 500;
-                XtackTransaction transaction = new XtackTransaction(null,
-                        Database.SYSTEM_ACCOUNT_UUID, answerAuthor.getUuid(),
-                        bountyDrops, XtackTransactionType.ANSWER_BOUNTY, null);
-                database.createTransaction(transaction.getSourceAccountUuid(), transaction.getDestinationAccountUuid(),
-                        transaction.getDrops(), transaction.getType());
-                database.createTransaction(transaction.getDestinationAccountUuid(), transaction.getSourceAccountUuid(),
-                        500, XtackTransactionType.PLATFORM_FEE);
-                database.addBalance(answerAuthor.getUuid(), bountyDrops);
-                return answer;
+                if (database.acceptAnswer(questionUuid, answerUuid)) {
+                    Answer answer = database.getAnswer(answerUuid);
+                    Account answerAuthor = database.getAccount(database.getAnswer(answerUuid).getAuthorUuid());
+                    long bountyDrops = question.getBountyMin() - 500;
+                    XtackTransaction transaction = new XtackTransaction(null,
+                            Database.SYSTEM_ACCOUNT_UUID, answerAuthor.getUuid(),
+                            bountyDrops, XtackTransactionType.ANSWER_BOUNTY, null);
+                    database.createTransaction(transaction.getSourceAccountUuid(), transaction.getDestinationAccountUuid(),
+                            transaction.getDrops(), transaction.getType());
+                    database.createTransaction(transaction.getDestinationAccountUuid(), transaction.getSourceAccountUuid(),
+                            500, XtackTransactionType.PLATFORM_FEE);
+                    database.addBalance(answerAuthor.getUuid(), bountyDrops);
+                    return answer;
+                }
+                throw new WebApplicationException("Problem querying for this question in database.", 500);
             }
             else {
                 throw new WebApplicationException(403);
