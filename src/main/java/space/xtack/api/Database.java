@@ -242,17 +242,18 @@ public class Database {
     }
 
     public String createTransaction(String sourceAccountUuid, String destinationAccountUuid, long amount,
-                                    XtackTransactionType type) throws SQLException, URISyntaxException {
+                                    XtackTransactionType type, String rippleTransactionId) throws SQLException, URISyntaxException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO transactions (uuid, src_account_uuid, dest_account_uuid, drops, type) " +
-                        "VALUES (?::uuid, ?::uuid, ?::uuid, ?, ?);");
+                "INSERT INTO transactions (uuid, src_account_uuid, dest_account_uuid, drops, type, ripple_transaction_id) " +
+                        "VALUES (?::uuid, ?::uuid, ?::uuid, ?, ?, ?);");
         String uuid = UUID.randomUUID().toString();
         ps.setString(1, uuid);
         ps.setString(2, sourceAccountUuid);
         ps.setString(3, destinationAccountUuid);
         ps.setLong(4, amount);
         ps.setString(5, type.name());
+        ps.setString(6, rippleTransactionId);
         ps.execute();
         connection.close();
         return uuid;
@@ -283,7 +284,8 @@ public class Database {
             long drops = rs.getLong("drops");
             XtackTransactionType type = XtackTransactionType.valueOf(rs.getString("type"));
             Timestamp timestamp = rs.getTimestamp("timestamp");
-            return new XtackTransaction(uuid, sourceAccountUuid, destinationAccountUuid, drops, type, timestamp);
+            String rippleTransactionId = rs.getString("ripple_transaction_id");
+            return new XtackTransaction(uuid, sourceAccountUuid, destinationAccountUuid, drops, type, timestamp, rippleTransactionId);
         }
         return null;
     }

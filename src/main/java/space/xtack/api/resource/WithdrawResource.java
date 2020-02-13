@@ -40,11 +40,12 @@ public class WithdrawResource {
             if (fee * 2 > balance) {
                 throw new WebApplicationException("Not enough balance to cover transaction fee.", 400);
             }
-            XpringClient.send(BigInteger.valueOf(balance - fee), addressParam.get(), XtackWallet.MASTER_WALLET);
+            String rippleTransactionId = XpringClient.send(BigInteger.valueOf(balance - fee), addressParam.get(),
+                    XtackWallet.MASTER_WALLET);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, balance - fee,
-                    XtackTransactionType.WITHDRAW);
+                    XtackTransactionType.WITHDRAW, rippleTransactionId);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, fee,
-                    XtackTransactionType.RIPPLE_FEE);
+                    XtackTransactionType.RIPPLE_FEE, rippleTransactionId);
             database.addBalance(account.getUuid(), -balance);
             return true;
         } catch (IOException | SQLException | URISyntaxException e) {

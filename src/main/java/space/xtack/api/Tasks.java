@@ -35,7 +35,7 @@ public class Tasks {
                         continue;
                     }
                     database.createTransaction(Database.SYSTEM_ACCOUNT_UUID, account.getUuid(), transaction.getDrops(),
-                            XtackTransactionType.DEPOSIT);
+                            XtackTransactionType.DEPOSIT, transaction.getId());
                     database.addBalance(account.getUuid(), transaction.getDrops());
                 }
                 if (transactions.size() > 0) {

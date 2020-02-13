@@ -48,12 +48,12 @@ public class AcceptAnswerResource {
                     }
                     XtackTransaction transaction = new XtackTransaction(null,
                             Database.SYSTEM_ACCOUNT_UUID, answerAuthor.getUuid(),
-                            bountyDrops, XtackTransactionType.ANSWER_BOUNTY, null);
+                            bountyDrops, XtackTransactionType.ANSWER_BOUNTY, null, null);
                     database.createTransaction(transaction.getSourceAccountUuid(), transaction.getDestinationAccountUuid(),
-                            transaction.getDrops(), transaction.getType());
+                            transaction.getDrops(), transaction.getType(), null);
                     if (question.getBountyMin() != 0) {
                         database.createTransaction(transaction.getDestinationAccountUuid(), transaction.getSourceAccountUuid(),
-                                PLATFORM_FEE, XtackTransactionType.PLATFORM_FEE);
+                                PLATFORM_FEE, XtackTransactionType.PLATFORM_FEE, null);
                     }
                     database.addBalance(answerAuthor.getUuid(), bountyDrops);
                     return answer;

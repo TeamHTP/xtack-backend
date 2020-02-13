@@ -12,17 +12,19 @@ public class XtackTransaction {
     private long drops;
     private XtackTransactionType type;
     private Timestamp timestamp;
+    private String rippleTransactionId;
 
     public XtackTransaction() {}
 
     public XtackTransaction(String uuid, String sourceAccountUuid, String destinationAccountUuid, long drops,
-                            XtackTransactionType type, Timestamp timestamp) {
+                            XtackTransactionType type, Timestamp timestamp, String rippleTransactionId) {
         this.uuid = uuid;
         this.sourceAccountUuid = sourceAccountUuid;
         this.destinationAccountUuid = destinationAccountUuid;
         this.drops = drops;
         this.type = type;
         this.timestamp = timestamp;
+        this.rippleTransactionId = rippleTransactionId;
     }
 
     @JsonProperty
@@ -52,5 +54,9 @@ public class XtackTransaction {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public String getRippleTransactionId() {
+        return rippleTransactionId;
     }
 }
