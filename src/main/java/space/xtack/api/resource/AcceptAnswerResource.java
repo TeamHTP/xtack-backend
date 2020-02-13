@@ -16,6 +16,8 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class AcceptAnswerResource {
 
+    public static final long PLATFORM_FEE = 35000;
+
     private Database database;
 
     public AcceptAnswerResource(Database database) {
@@ -40,14 +42,14 @@ public class AcceptAnswerResource {
                 if (database.acceptAnswer(questionUuid, answerUuid)) {
                     Answer answer = database.getAnswer(answerUuid);
                     Account answerAuthor = database.getAccount(database.getAnswer(answerUuid).getAuthorUuid());
-                    long bountyDrops = question.getBountyMin() - 500;
+                    long bountyDrops = question.getBountyMin() - PLATFORM_FEE;
                     XtackTransaction transaction = new XtackTransaction(null,
                             Database.SYSTEM_ACCOUNT_UUID, answerAuthor.getUuid(),
                             bountyDrops, XtackTransactionType.ANSWER_BOUNTY, null);
                     database.createTransaction(transaction.getSourceAccountUuid(), transaction.getDestinationAccountUuid(),
                             transaction.getDrops(), transaction.getType());
                     database.createTransaction(transaction.getDestinationAccountUuid(), transaction.getSourceAccountUuid(),
-                            500, XtackTransactionType.PLATFORM_FEE);
+                            PLATFORM_FEE, XtackTransactionType.PLATFORM_FEE);
                     database.addBalance(answerAuthor.getUuid(), bountyDrops);
                     return answer;
                 }
