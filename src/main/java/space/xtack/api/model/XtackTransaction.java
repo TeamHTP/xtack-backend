@@ -56,6 +56,7 @@ public class XtackTransaction {
         return timestamp;
     }
 
+    @JsonProperty("ripple_transaction_id")
     public String getRippleTransactionId() {
         return rippleTransactionId;
     }
