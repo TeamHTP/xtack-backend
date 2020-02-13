@@ -49,6 +49,7 @@ public class Answer {
         return score;
     }
 
+    @JsonProperty("is_accepted")
     public boolean isAccepted() {
         return isAccepted;
     }
