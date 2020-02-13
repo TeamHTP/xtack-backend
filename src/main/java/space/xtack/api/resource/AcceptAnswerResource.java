@@ -6,15 +6,14 @@ import space.xtack.api.Database;
 import space.xtack.api.model.*;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Optional;
 
 @Path("/questions/{q_uuid}/answer/{a_uuid}/accept")
+@Produces(MediaType.APPLICATION_JSON)
 public class AcceptAnswerResource {
 
     private Database database;

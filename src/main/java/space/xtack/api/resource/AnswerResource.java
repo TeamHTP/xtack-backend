@@ -4,14 +4,13 @@ import com.codahale.metrics.annotation.Timed;
 import space.xtack.api.Database;
 import space.xtack.api.model.Answer;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 @Path("/answer/{uuid}")
+@Produces(MediaType.APPLICATION_JSON)
 public class AnswerResource {
 
     private Database database;
