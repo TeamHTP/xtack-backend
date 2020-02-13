@@ -45,7 +45,7 @@ public class CreateQuestionResource {
             double bounty = bountyParam.get();
             Account account = accOpt.get();
 
-            if (bounty < 1 || bounty > 1000000) {
+            if (bounty != 0 && (bounty < 1 || bounty > 1000000)) {
                 throw new WebApplicationException("Bounty must be between 1 and 1000000 XRP", 400);
             }
 
