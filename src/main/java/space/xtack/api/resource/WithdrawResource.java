@@ -37,6 +37,9 @@ public class WithdrawResource {
             Account account = accOpt.get();
             long balance = account.getBalance();
             long fee = XpringClient.getFee();
+            if (fee * 2 > balance) {
+                throw new WebApplicationException("Not enough balance to cover transaction fee.", 400);
+            }
             XpringClient.send(BigInteger.valueOf(balance - fee), addressParam.get(), XtackWallet.MASTER_WALLET);
             database.createTransaction(account.getUuid(), Database.SYSTEM_ACCOUNT_UUID, balance - fee,
                     XtackTransactionType.WITHDRAW);
