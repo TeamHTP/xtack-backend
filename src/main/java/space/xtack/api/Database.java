@@ -230,7 +230,7 @@ public class Database {
         PreparedStatement queryPs = connection.prepareStatement("SELECT * FROM questions WHERE accepted_answer_uuid IS NULL AND uuid = ?::uuid;");
         queryPs.setString(1, questionUuid);
         ResultSet rs = queryPs.executeQuery();
-        if (rs.next()) {
+        if (!rs.next()) {
             return false;
         }
         PreparedStatement questionsPs = connection.prepareStatement("UPDATE questions SET accepted_answer_uuid = ?::uuid WHERE uuid = ?::uuid;");
